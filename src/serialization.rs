@@ -37,6 +37,30 @@ pub mod jsonstring {
     }
 }
 
+pub mod prefixedhexstring {
+    use super::*;
+
+    pub fn serialize<S>(bytes: &[u8], serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_str(&format!("0x{}", hex::encode(bytes)))
+    }
+
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<Vec<u8>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let string = Cow::<'de, str>::deserialize(deserializer)?;
+        if !string.starts_with("0x") {
+            return Err(D::Error::custom("hex string missing '0x' prefix"));
+        }
+
+        let bytes = hex::decode(&string[2..]).map_err(D::Error::custom)?;
+        Ok(bytes)
+    }
+}
+
 pub mod hexstring {
     use super::*;
 

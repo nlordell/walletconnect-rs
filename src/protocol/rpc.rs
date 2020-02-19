@@ -60,7 +60,7 @@ pub struct Transaction {
     pub gas_price: Option<U256>,
     #[serde(default)]
     pub value: U256,
-    #[serde(default, with = "serialization::hexstring")]
+    #[serde(default, with = "serialization::prefixedhexstring")]
     pub data: Vec<u8>,
     #[serde(default)]
     pub nonce: Option<U256>,

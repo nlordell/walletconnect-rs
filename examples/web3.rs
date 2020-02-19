@@ -3,7 +3,7 @@ use std::env;
 use std::error::Error;
 use std::process;
 use walletconnect::transport::WalletConnect;
-use walletconnect::{qr, Metadata};
+use walletconnect::{qr, Client, Metadata};
 use web3::types::TransactionRequest;
 use web3::Web3;
 
@@ -16,7 +16,7 @@ fn main() {
 }
 
 async fn run() -> Result<(), Box<dyn Error>> {
-    let wc = WalletConnect::new(
+    let client = Client::new(
         "examples-web3",
         Metadata {
             description: "WalletConnect-rs web3 transport example.".into(),
@@ -24,10 +24,11 @@ async fn run() -> Result<(), Box<dyn Error>> {
             icons: vec!["https://avatars0.githubusercontent.com/u/4210206".parse()?],
             name: "WalletConnect-rs Web3 Example".into(),
         },
-        env::var("INFURA_PROJECT_ID")?,
-        qr::print,
-    )
-    .await?;
+    )?;
+
+    client.ensure_session(qr::print).await?;
+
+    let wc = WalletConnect::new(client, env::var("INFURA_PROJECT_ID")?)?;
     let web3 = Web3::new(wc);
 
     let accounts = web3.eth().accounts().compat().await?;

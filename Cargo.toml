@@ -19,7 +19,7 @@ transport = ["web3", "futures/compat"]
 
 [dependencies]
 data-encoding = "2.1"
-ethereum-types = { version = "0.7", features = ["serialize"] }
+ethereum-types = { version = "0.8", features = ["serialize"] }
 futures = "0.3"
 jsonrpc-core = "14.0"
 lazy_static = "1.4"

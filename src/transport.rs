@@ -1,6 +1,5 @@
 use crate::client::{Client, ConnectorError, NotConnectedError, SessionError};
-use crate::protocol::{Metadata, Transaction};
-use crate::uri::Uri;
+use crate::protocol::Transaction;
 use ethereum_types::Address;
 use futures::compat::{Compat, Future01CompatExt};
 use futures::future::{BoxFuture, FutureExt, TryFutureExt};
@@ -8,7 +7,6 @@ use jsonrpc_core::{Call, MethodCall, Params};
 use serde::Deserialize;
 use serde_json::{json, Value};
 use std::error::Error;
-use std::path::PathBuf;
 use std::sync::Arc;
 use thiserror::Error;
 use web3::transports::Http;
@@ -62,19 +60,8 @@ struct Inner<T> {
 }
 
 impl WalletConnect<Http> {
-    pub async fn new(
-        profile: impl Into<PathBuf>,
-        meta: impl Into<Metadata>,
-        infura_id: impl Into<String>,
-        display: impl FnOnce(Uri),
-    ) -> Result<Self, TransportError> {
-        WalletConnect::with_factory(
-            profile,
-            meta,
-            InfuraTransportFactory(infura_id.into()),
-            display,
-        )
-        .await
+    pub fn new(client: Client, infura_id: impl Into<String>) -> Result<Self, TransportError> {
+        WalletConnect::with_factory(client, InfuraTransportFactory(infura_id.into()))
     }
 }
 
@@ -82,19 +69,12 @@ impl<T> WalletConnect<T>
 where
     T: Transport,
 {
-    pub async fn with_factory<F>(
-        profile: impl Into<PathBuf>,
-        meta: impl Into<Metadata>,
-        mut factory: F,
-        display: impl FnOnce(Uri),
-    ) -> Result<Self, TransportError>
+    pub fn with_factory<F>(client: Client, mut factory: F) -> Result<Self, TransportError>
     where
         F: TransportFactory<Transport = T>,
         F::Error: 'static,
     {
-        let client = Client::new(profile, meta)?;
-        let (accounts, chain_id) = client.ensure_session(display).await?;
-
+        let (accounts, chain_id) = client.accounts()?;
         let transport = factory
             .new(chain_id)
             .map_err(|err| TransportError::Transport(Box::new(err)))?;
@@ -105,6 +85,10 @@ where
             chain_id,
             transport,
         })))
+    }
+
+    pub fn accounts(&self) -> (Vec<Address>, u64) {
+        (self.0.accounts.clone(), self.0.chain_id)
     }
 }
 
@@ -128,6 +112,7 @@ where
     type Out = Compat<BoxFuture<'static, Result<Value, web3::Error>>>;
 
     fn prepare(&self, method: &str, params: Vec<Value>) -> (RequestId, Call) {
+        log::trace!("preparing call '{}' {:?}", method, params);
         match method {
             "eth_accounts" | "eth_chainId" | "eth_sendTransaction" => {
                 (0, helpers::build_request(0, method, params))
@@ -151,6 +136,7 @@ where
                     params: Params::Array(params),
                     ..
                 }) if method == "eth_sendTransaction" && !params.is_empty() => {
+                    log::trace!(">>{}", params[0]);
                     let transaction = Transaction::deserialize(&params[0])?;
                     let tx = inner
                         .client

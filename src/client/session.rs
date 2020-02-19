@@ -1,5 +1,7 @@
 use crate::crypto::Key;
-use crate::protocol::{Metadata, SessionParams, SessionRequest, SessionUpdate, Topic};
+use crate::protocol::{
+    Metadata, PeerMetadata, SessionParams, SessionRequest, SessionUpdate, Topic,
+};
 use crate::uri::Uri;
 use ethereum_types::Address;
 use serde::{Deserialize, Serialize};
@@ -17,7 +19,7 @@ pub struct Session {
     pub client_id: Topic,
     pub client_meta: Metadata,
     pub peer_id: Option<Topic>,
-    pub peer_meta: Option<Metadata>,
+    pub peer_meta: Option<PeerMetadata>,
     pub handshake_id: u64,
     pub handshake_topic: Topic,
 }

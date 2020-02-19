@@ -1,13 +1,18 @@
 use futures::compat::Future01CompatExt;
 use std::env;
 use std::error::Error;
+use std::process;
 use walletconnect::transport::WalletConnect;
 use walletconnect::{qr, Metadata};
 use web3::types::TransactionRequest;
 use web3::Web3;
 
 fn main() {
-    futures::executor::block_on(run()).unwrap();
+    env_logger::init();
+    if let Err(err) = futures::executor::block_on(run()) {
+        log::error!("{}", err);
+        process::exit(1);
+    }
 }
 
 async fn run() -> Result<(), Box<dyn Error>> {

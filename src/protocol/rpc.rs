@@ -46,13 +46,13 @@ pub struct Transaction {
     #[serde(default, with = "serialization::emptynone")]
     pub to: Option<Address>,
     #[serde(default)]
-    pub gas_limit: U256,
+    pub gas_limit: Option<U256>,
     #[serde(default)]
-    pub gas_price: U256,
+    pub gas_price: Option<U256>,
     #[serde(default)]
     pub value: U256,
     #[serde(default, with = "serialization::hexstring")]
     pub data: Vec<u8>,
     #[serde(default)]
-    pub nonce: U256,
+    pub nonce: Option<U256>,
 }

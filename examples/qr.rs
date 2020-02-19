@@ -1,9 +1,13 @@
 use std::error::Error;
+use std::process;
 use walletconnect::{qr, Client, Metadata, Transaction};
 
 fn main() {
     env_logger::init();
-    futures::executor::block_on(run()).unwrap();
+    if let Err(err) = futures::executor::block_on(run()) {
+        log::error!("{}", err);
+        process::exit(1);
+    }
 }
 
 async fn run() -> Result<(), Box<dyn Error>> {

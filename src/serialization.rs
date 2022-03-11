@@ -1,6 +1,6 @@
 use crate::hex;
+use serde::__private::de::{Content, ContentRefDeserializer};
 use serde::de::{DeserializeOwned, Error as _};
-use serde::private::de::{Content, ContentRefDeserializer};
 use serde::ser::Error as _;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::borrow::Cow;

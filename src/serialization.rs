@@ -1,6 +1,6 @@
 use crate::hex;
+use ethereum_types::Address;
 use serde::de::{DeserializeOwned, Error as _};
-use serde::private::de::{Content, ContentRefDeserializer};
 use serde::ser::Error as _;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::borrow::Cow;
@@ -81,13 +81,12 @@ pub mod hexstring {
     }
 }
 
-pub mod emptynone {
+pub mod emptynoneaddress {
     use super::*;
 
-    pub fn serialize<S, T>(value: &Option<T>, serializer: S) -> Result<S::Ok, S::Error>
+    pub fn serialize<S>(value: &Option<Address>, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
-        T: Serialize,
     {
         match value {
             Some(value) => value.serialize(serializer),
@@ -95,16 +94,13 @@ pub mod emptynone {
         }
     }
 
-    pub fn deserialize<'de, D, T>(deserializer: D) -> Result<Option<T>, D::Error>
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<Address>, D::Error>
     where
         D: Deserializer<'de>,
-        T: Deserialize<'de>,
     {
-        let content = Content::deserialize(deserializer)?;
-
-        match Cow::<'de, str>::deserialize(ContentRefDeserializer::<D::Error>::new(&content)) {
-            Ok(s) if s == "" => Ok(None),
-            _ => T::deserialize(ContentRefDeserializer::new(&content)).map(Option::Some),
+        match Cow::<'de, str>::deserialize(deserializer)?.as_ref() {
+            "" => Ok(None),
+            value => value.parse().map(Some).map_err(D::Error::custom),
         }
     }
 }

@@ -52,7 +52,7 @@ pub struct SessionUpdate {
 #[serde(rename_all = "camelCase")]
 pub struct Transaction {
     pub from: Address,
-    #[serde(default, with = "serialization::emptynone")]
+    #[serde(default, with = "serialization::emptynoneaddress")]
     pub to: Option<Address>,
     #[serde(default)]
     pub gas_limit: Option<U256>,

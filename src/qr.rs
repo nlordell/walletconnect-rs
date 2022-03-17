@@ -25,6 +25,12 @@ pub fn try_print(data: impl AsRef<[u8]>) -> Result<(), PrintError> {
         .print(Output::default(), Colors::from_env())?)
 }
 
+pub fn print_with_url(url: impl AsRef<str>) {
+    let url = url.as_ref();
+    println!("{url}");
+    print(url);
+}
+
 pub fn print(data: impl AsRef<[u8]>) {
     try_print(data).expect("unhandled error printing QR code to terminal")
 }

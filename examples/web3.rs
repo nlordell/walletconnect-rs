@@ -1,21 +1,14 @@
-use futures::compat::Future01CompatExt;
 use std::env;
 use std::error::Error;
-use std::process;
 use walletconnect::transport::WalletConnect;
 use walletconnect::{qr, Client, Metadata};
 use web3::types::TransactionRequest;
 use web3::Web3;
 
-fn main() {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn Error>> {
     env_logger::init();
-    if let Err(err) = futures::executor::block_on(run()) {
-        log::error!("{}", err);
-        process::exit(1);
-    }
-}
 
-async fn run() -> Result<(), Box<dyn Error>> {
     let client = Client::new(
         "examples-web3",
         Metadata {
@@ -26,12 +19,12 @@ async fn run() -> Result<(), Box<dyn Error>> {
         },
     )?;
 
-    client.ensure_session(qr::print).await?;
+    client.ensure_session(qr::print_with_url).await?;
 
     let wc = WalletConnect::new(client, env::var("INFURA_PROJECT_ID")?)?;
     let web3 = Web3::new(wc);
 
-    let accounts = web3.eth().accounts().compat().await?;
+    let accounts = web3.eth().accounts().await?;
     println!("Connected accounts:");
     for account in &accounts {
         println!(" - {:?}", account);
@@ -43,13 +36,8 @@ async fn run() -> Result<(), Box<dyn Error>> {
             from: accounts[0],
             to: Some("000102030405060708090a0b0c0d0e0f10111213".parse()?),
             value: Some(1_000_000_000_000_000u128.into()),
-            gas: None,
-            gas_price: None,
-            data: None,
-            nonce: None,
-            condition: None,
+            ..TransactionRequest::default()
         })
-        .compat()
         .await?;
 
     println!("Transaction sent:\n  https://etherscan.io/tx/{:?}", tx);

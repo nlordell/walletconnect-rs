@@ -21,7 +21,7 @@ async fn run() -> Result<(), Box<dyn Error>> {
         },
     )?;
 
-    let (accounts, _) = client.ensure_session(qr::print).await?;
+    let (accounts, _) = client.ensure_session(qr::print_with_url).await?;
 
     println!("Connected accounts:");
     for account in &accounts {

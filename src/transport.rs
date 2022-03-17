@@ -1,8 +1,7 @@
 use crate::client::{Client, ConnectorError, NotConnectedError, SessionError};
 use crate::protocol::Transaction;
 use ethereum_types::Address;
-use futures::compat::{Compat, Future01CompatExt};
-use futures::future::{BoxFuture, FutureExt, TryFutureExt};
+use futures::future::{BoxFuture, FutureExt};
 use jsonrpc_core::{Call, MethodCall, Params};
 use serde::Deserialize;
 use serde_json::{json, Value};
@@ -34,16 +33,17 @@ impl TransportFactory for InfuraTransportFactory {
             5 => "goerli",
             42 => "kovan",
             _ => {
-                return Err(web3::Error::Transport(format!(
-                    "unknown chain ID '{}'",
-                    chain_id
-                )))
+                return Err(web3::Error::Transport(
+                    web3::error::TransportError::Message(format!(
+                        "unknown chain ID '{}'",
+                        chain_id
+                    )),
+                ))
             }
         };
         let url = format!("https://{}.infura.io/v3/{}", network, self.0);
-        let (event_loop, http) = Http::new(&url)?;
+        let http = Http::new(&url)?;
 
-        event_loop.into_remote();
         Ok(http)
     }
 }
@@ -109,7 +109,7 @@ where
     T: Transport + Send + Sync + 'static,
     T::Out: Send,
 {
-    type Out = Compat<BoxFuture<'static, Result<Value, web3::Error>>>;
+    type Out = BoxFuture<'static, Result<Value, web3::Error>>;
 
     fn prepare(&self, method: &str, params: Vec<Value>) -> (RequestId, Call) {
         log::trace!("preparing call '{}' {:?}", method, params);
@@ -142,13 +142,16 @@ where
                         .client
                         .send_transaction(transaction)
                         .await
-                        .map_err(|err| web3::Error::Transport(err.to_string()))?;
+                        .map_err(|err| {
+                            web3::Error::Transport(web3::error::TransportError::Message(
+                                err.to_string(),
+                            ))
+                        })?;
                     Ok(json!(tx))
                 }
-                request => inner.transport.send(id, request).compat().await,
+                request => inner.transport.send(id, request).await,
             }
         }
         .boxed()
-        .compat()
     }
 }

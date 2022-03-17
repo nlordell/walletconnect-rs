@@ -1,6 +1,6 @@
 [package]
 name = "walletconnect"
-version = "0.0.2"
+version = "0.0.3"
 authors = ["Nicholas Rodrigues Lordello <nlordell@gmail.com>"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
@@ -15,37 +15,38 @@ WalletConnect client implementation in Rust.
 [features]
 default = []
 qr = ["atty", "qrcode", "termcolor", "terminfo"]
-transport = ["web3", "futures/compat"]
+transport = ["web3"]
 
 [dependencies]
-data-encoding = "2.1"
-ethereum-types = { version = "0.8", features = ["serialize"] }
+data-encoding = "2"
+ethereum-types = { version = "0.12", features = ["serialize"] }
 futures = "0.3"
-jsonrpc-core = "14.0"
-lazy_static = "1.4"
+jsonrpc-core = "18"
+lazy_static = "1"
 log = "0.4"
 openssl = "0.10"
-rand = "0.7"
+rand = "0.8"
 ring = "0.16"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-thiserror = "1.0"
-url = { version = "2.1", features = ["serde"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "1"
+url = { version = "2", features = ["serde"] }
 uuid = { version = "0.8", features = ["serde", "v4"] }
 ws = { version = "0.9", features = ["ssl"] }
-zeroize = "1.1"
+zeroize = "1"
 
 # qr
 atty = { version = "0.2", optional = true }
-qrcode = { version = "0.11", optional = true }
-termcolor = { version = "1.1", optional = true }
+qrcode = { version = "0.12", optional = true }
+termcolor = { version = "1", optional = true }
 terminfo = { version = "0.7", optional = true }
 
 # transport
-web3 = { version = "0.10", optional = true }
+web3 = { version = "0.18", optional = true }
 
 [dev-dependencies]
-env_logger = "0.7"
+env_logger = "0.9"
+tokio = { version = "1", features = ["full"] }
 
 [[example]]
 name = "qr"

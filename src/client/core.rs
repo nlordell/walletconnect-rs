@@ -4,7 +4,7 @@ use super::socket::{MessageHandler, Socket, SocketError, SocketHandle};
 use super::storage::Storage;
 use crate::protocol::{Topic, Transaction};
 use crate::uri::Uri;
-use ethereum_types::{Address, H256};
+use ethers_core::types::{Address, Bytes, H256};
 use futures::channel::oneshot;
 use jsonrpc_core::{Id, MethodCall, Output, Params, Version};
 use serde::de::DeserializeOwned;
@@ -216,9 +216,15 @@ impl Connector {
         Ok(self.call("eth_sendTransaction", transaction).await?)
     }
 
-    // pub fn sign_transaction() {}
+    pub async fn sign_transaction(&self, transaction: Transaction) -> Result<Bytes, CallError> {
+        Ok(self.call("eth_signTransaction", transaction).await?)
+    }
+
+    pub async fn personal_sign(&self, data: &[&str]) -> Result<Bytes, CallError> {
+        Ok(self.call("personal_sign", data).await?)
+    }
+
     // pub fn sign_message() {}
-    // pub fn sign_personal_message() {}
     // pub fn signed_typed_data() {}
     // pub fn send_custom_request() {}
 

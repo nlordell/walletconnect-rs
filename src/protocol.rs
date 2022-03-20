@@ -6,4 +6,4 @@ pub use self::message::*;
 pub use self::rpc::*;
 pub use self::topic::*;
 
-pub use ethereum_types::{Address, H160, H256, U256};
+pub use ethers_core::types::{Address, H160, H256, U256};

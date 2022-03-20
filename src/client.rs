@@ -10,7 +10,7 @@ pub use self::options::{Connection, Options, DEFAULT_BRIDGE_URL};
 pub use self::socket::SocketError;
 use crate::protocol::{Metadata, Transaction};
 use crate::uri::Uri;
-use ethereum_types::{Address, H256};
+use ethers_core::types::{Address, Bytes, Signature, H256};
 use std::path::PathBuf;
 
 #[derive(Debug)]
@@ -45,6 +45,15 @@ impl Client {
 
     pub async fn send_transaction(&self, transaction: Transaction) -> Result<H256, CallError> {
         Ok(self.connection.send_transaction(transaction).await?)
+    }
+
+    pub async fn sign_transaction(&self, transaction: Transaction) -> Result<Bytes, CallError> {
+        Ok(self.connection.sign_transaction(transaction).await?)
+    }
+
+    pub async fn personal_sign(&self, data: &[&str]) -> Result<Signature, CallError> {
+        let sig = self.connection.personal_sign(data).await?;
+        Ok(sig.as_ref().try_into().unwrap())
     }
 
     pub fn close(self) -> Result<(), SocketError> {

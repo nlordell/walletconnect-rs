@@ -1,6 +1,6 @@
 use crate::client::{Client, ConnectorError, NotConnectedError, SessionError};
 use crate::protocol::Transaction;
-use ethereum_types::Address;
+use ethers_core::types::Address;
 use futures::future::{BoxFuture, FutureExt};
 use jsonrpc_core::{Call, MethodCall, Params};
 use serde::Deserialize;

@@ -1,5 +1,5 @@
 use crate::hex;
-use ethereum_types::Address;
+use ethers_core::types::Address;
 use serde::de::{DeserializeOwned, Error as _};
 use serde::ser::Error as _;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};

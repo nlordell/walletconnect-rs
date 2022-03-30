@@ -1,6 +1,6 @@
 use crate::protocol::Topic;
 use crate::serialization;
-use ethereum_types::{Address, U256};
+use ethers_core::types::{Address, U256};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use url::Url;

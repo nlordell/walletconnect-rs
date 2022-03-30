@@ -1,6 +1,6 @@
 [package]
 name = "walletconnect"
-version = "0.0.3"
+version = "0.1.0"
 authors = ["Nicholas Rodrigues Lordello <nlordell@gmail.com>"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
@@ -19,7 +19,6 @@ transport = ["web3"]
 
 [dependencies]
 data-encoding = "2"
-ethereum-types = { version = "0.12", features = ["serialize"] }
 futures = "0.3"
 jsonrpc-core = "18"
 lazy_static = "1"
@@ -34,6 +33,7 @@ url = { version = "2", features = ["serde"] }
 uuid = { version = "0.8", features = ["serde", "v4"] }
 ws = { version = "0.9", features = ["ssl"] }
 zeroize = "1"
+ethers-core = "0.6"
 
 # qr
 atty = { version = "0.2", optional = true }

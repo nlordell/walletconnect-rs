@@ -3,7 +3,7 @@ use crate::protocol::{
     Metadata, PeerMetadata, SessionParams, SessionRequest, SessionUpdate, Topic,
 };
 use crate::uri::Uri;
-use ethereum_types::Address;
+use ethers_core::types::Address;
 use serde::{Deserialize, Serialize};
 use url::form_urlencoded::Serializer;
 use url::Url;

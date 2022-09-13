@@ -6,13 +6,13 @@ use std::str::Utf8Error;
 use std::thread::{self, JoinHandle};
 use thiserror::Error;
 use url::Url;
-use ws::{Handler, Message, Sender, WebSocket};
+use parity_ws::{Handler, Message, Sender, WebSocket};
 
 #[derive(Debug)]
 pub struct Socket {
     key: Key,
     sender: Sender,
-    event_loop: JoinHandle<Result<(), ws::Error>>,
+    event_loop: JoinHandle<Result<(), parity_ws::Error>>,
 }
 
 impl Socket {
@@ -85,7 +85,7 @@ impl Socket {
 #[derive(Debug, Error)]
 pub enum SocketError {
     #[error("WebSocket error")]
-    WebSocket(#[from] ws::Error),
+    WebSocket(#[from] parity_ws::Error),
     #[error("JSON serialization error: {0}")]
     Json(#[from] serde_json::Error),
     #[error("failed to seal AEAD payload: {0}")]
@@ -187,7 +187,7 @@ impl<M> Handler for SocketHandler<M>
 where
     M: MessageHandler,
 {
-    fn on_message(&mut self, message: Message) -> ws::Result<()> {
+    fn on_message(&mut self, message: Message) -> parity_ws::Result<()> {
         let (topic, payload) = self.decrypt_message(message.as_text()?).map_err(Box::new)?;
         let handle = SocketHandle {
             key: &self.key,

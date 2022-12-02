@@ -31,9 +31,10 @@ serde_json = "1"
 thiserror = "1"
 url = { version = "2", features = ["serde"] }
 uuid = { version = "0.8", features = ["serde", "v4"] }
-ws = { version = "0.9", features = ["ssl"] }
+parity-ws = { version = "0.11", features = ["ssl"] }
 zeroize = "1"
-ethers-core = "0.6"
+ethers-core = "0"
+ethereum-types = "0"
 
 # qr
 atty = { version = "0.2", optional = true }

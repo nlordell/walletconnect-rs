@@ -34,7 +34,7 @@ impl Storage<Session> {
 
 impl<T: DeserializeOwned + Serialize> Storage<T> {
     fn load(path: &Path) -> io::Result<T> {
-        let file = File::open(&path)?;
+        let file = File::open(path)?;
         let value = serde_json::from_reader(file)?;
 
         Ok(value)

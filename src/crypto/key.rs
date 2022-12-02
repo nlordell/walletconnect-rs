@@ -25,7 +25,7 @@ impl Key {
     }
 
     pub fn display(&self) -> DisplayKey {
-        DisplayKey(hex::encode(&*self.0))
+        DisplayKey(hex::encode(self.0.as_slice()))
     }
 
     pub fn seal(&self, data: impl AsRef<[u8]>) -> Result<EncryptionPayload, SealError> {

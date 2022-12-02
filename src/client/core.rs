@@ -213,15 +213,15 @@ impl Connector {
     // pub fn kill_session() {}
 
     pub async fn send_transaction(&self, transaction: Transaction) -> Result<H256, CallError> {
-        Ok(self.call("eth_sendTransaction", transaction).await?)
+        self.call("eth_sendTransaction", transaction).await
     }
 
     pub async fn sign_transaction(&self, transaction: Transaction) -> Result<Bytes, CallError> {
-        Ok(self.call("eth_signTransaction", transaction).await?)
+        self.call("eth_signTransaction", transaction).await
     }
 
     pub async fn personal_sign(&self, data: &[&str]) -> Result<Bytes, CallError> {
-        Ok(self.call("personal_sign", data).await?)
+        self.call("personal_sign", data).await
     }
 
     // pub fn sign_message() {}

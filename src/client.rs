@@ -40,15 +40,15 @@ impl Client {
     where
         F: FnOnce(Uri),
     {
-        Ok(self.connection.ensure_session(f).await?)
+        self.connection.ensure_session(f).await
     }
 
     pub async fn send_transaction(&self, transaction: Transaction) -> Result<H256, CallError> {
-        Ok(self.connection.send_transaction(transaction).await?)
+        self.connection.send_transaction(transaction).await
     }
 
     pub async fn sign_transaction(&self, transaction: Transaction) -> Result<Bytes, CallError> {
-        Ok(self.connection.sign_transaction(transaction).await?)
+        self.connection.sign_transaction(transaction).await
     }
 
     pub async fn personal_sign(&self, data: &[&str]) -> Result<Signature, CallError> {

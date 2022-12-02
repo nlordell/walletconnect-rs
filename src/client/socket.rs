@@ -1,12 +1,12 @@
 use crate::crypto::{Key, OpenError, SealError};
 use crate::protocol::{SocketMessage, SocketMessageKind, Topic};
 use log::{trace, warn};
+use parity_ws::{Handler, Message, Sender, WebSocket};
 use std::error::Error;
 use std::str::Utf8Error;
 use std::thread::{self, JoinHandle};
 use thiserror::Error;
 use url::Url;
-use parity_ws::{Handler, Message, Sender, WebSocket};
 
 #[derive(Debug)]
 pub struct Socket {

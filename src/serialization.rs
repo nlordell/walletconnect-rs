@@ -1,5 +1,5 @@
 use crate::hex;
-use ethers_core::types::Address;
+use ethers_core::types::H160;
 use serde::de::{DeserializeOwned, Error as _};
 use serde::ser::Error as _;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -84,7 +84,7 @@ pub mod hexstring {
 pub mod emptynoneaddress {
     use super::*;
 
-    pub fn serialize<S>(value: &Option<Address>, serializer: S) -> Result<S::Ok, S::Error>
+    pub fn serialize<S>(value: &Option<H160>, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
@@ -94,7 +94,7 @@ pub mod emptynoneaddress {
         }
     }
 
-    pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<Address>, D::Error>
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<H160>, D::Error>
     where
         D: Deserializer<'de>,
     {
@@ -108,7 +108,7 @@ pub mod emptynoneaddress {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use ethereum_types::H160;
+    use ethers_core::types::H160;
     use serde_json::json;
 
     #[test]

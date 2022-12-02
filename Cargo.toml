@@ -1,6 +1,6 @@
 [package]
 name = "walletconnect"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Nicholas Rodrigues Lordello <nlordell@gmail.com>"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
@@ -34,7 +34,6 @@ uuid = { version = "0.8", features = ["serde", "v4"] }
 parity-ws = { version = "0.11", features = ["ssl"] }
 zeroize = "1"
 ethers-core = "0"
-ethereum-types = "0"
 
 # qr
 atty = { version = "0.2", optional = true }
